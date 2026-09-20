@@ -21,6 +21,9 @@ jobs:
     uses: GroupeZ-dev/actions/.github/workflows/build.yml@main
     with:
       project-name: "zItems"
+      # The shared workflow defaults to Java 25, which Gradle 8.14 cannot run on
+      # ("Unsupported class file major version 69"); the project targets 21.
+      java-version: "21"
       publish: true
       project-to-publish: "api:publish"
       discord-avatar-url: "https://groupez.dev/storage/images/325.png"
