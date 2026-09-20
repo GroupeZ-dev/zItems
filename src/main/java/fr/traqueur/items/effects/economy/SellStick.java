@@ -46,7 +46,12 @@ public record SellStick(
             return;
         }
 
-        ShopProvider provider = ShopProvider.get();
+        ShopProvider provider;
+        try {
+            provider = ShopProvider.get();
+        } catch (IllegalStateException e) {
+            return; // no provider registered: the stick is inert, the interaction stays vanilla
+        }
         event.setCancelled(true);
 
         List<ItemStack> itemStacks = new ArrayList<>();

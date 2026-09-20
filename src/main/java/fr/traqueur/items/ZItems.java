@@ -124,16 +124,16 @@ public class ZItems extends ItemsPlugin {
 
         this.reloadConfig();
 
-        if (!ShopProviders.initialize()) {
-            Logger.severe("No shop provider found! Disabling plugin.");
-            Logger.info("Available shop providers:");
-            for (ShopProviders shopProviders : ShopProviders.values()) {
-                Logger.info("- <gold>{}", shopProviders.pluginName());
-            }
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
+        // The built-in hooks (zShop, EconomyShopGUI, ShopGUIPlus) register themselves when their
+        // plugin is present. Any other plugin may register its own ShopProvider at its enable —
+        // zItems does not have to know it. Without any provider, only the sell effects
+        // (SELL_STICK, AUTO_SELL) are affected: they find none at use time and sell nothing.
+        // Nothing else in the plugin depends on a shop, so this is not a reason to disable it.
+        if (ShopProviders.initialize()) {
+            Logger.info("Shop provider <green>{} <reset>has been found.", ShopProviders.FOUND_PROVIDER.pluginName());
+        } else {
+            Logger.info("No built-in shop provider found — the sell effects wait for a plugin to register one.");
         }
-        Logger.info("Shop provider <green>{} <reset>has been found.", ShopProviders.FOUND_PROVIDER.pluginName());
 
         this.registerRegistries();
 
